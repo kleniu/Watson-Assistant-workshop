@@ -1,0 +1,5 @@
+---
+applications:
+  - name: webhook-restapi-server
+    memory: 64M
+    buildpack: nodejs_buildpack
