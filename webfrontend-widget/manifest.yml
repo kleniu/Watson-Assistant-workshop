@@ -1,0 +1,7 @@
+---
+applications:
+  - name: webfrontend-widget
+    memory: 64M
+    path: src
+    buildpacks: 
+      - https://github.com/cloudfoundry/staticfile-buildpack.git

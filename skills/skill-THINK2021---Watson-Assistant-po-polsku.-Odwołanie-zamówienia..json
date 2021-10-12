@@ -1,0 +1,415 @@
+{
+  "intents": [
+    {
+      "intent": "odwołanie",
+      "examples": [
+        {
+          "text": "chcę anulować"
+        },
+        {
+          "text": "chcę odwołać zamówienie"
+        },
+        {
+          "text": "nie chcę towaru"
+        },
+        {
+          "text": "proszę wykasować zamówienie"
+        }
+      ],
+      "description": "Intencja odwołania złożonego zamówienia w sklepie internetowym"
+    },
+    {
+      "intent": "o_mnie",
+      "examples": [
+        {
+          "text": "czy rozmawiam z człowiekiem?"
+        },
+        {
+          "text": "Kim jesteś?"
+        },
+        {
+          "text": "z kim rozmawiam?"
+        }
+      ],
+      "description": "Intencja: użytkownik chce się dowiedzieć czegoś o mnie."
+    },
+    {
+      "intent": "pomoc",
+      "examples": [
+        {
+          "text": "jak dokonać zwrotu"
+        },
+        {
+          "text": "jak możesz mi pomóc"
+        },
+        {
+          "text": "pomocy"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [
+    {
+      "entity": "e-mail",
+      "values": [
+        {
+          "type": "patterns",
+          "value": "true",
+          "patterns": [
+            "\\b[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,}\\b"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "nr-zamowienia",
+      "values": [
+        {
+          "type": "patterns",
+          "value": "true",
+          "patterns": [
+            "ZAM[0-9]+"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sys-date",
+      "values": [],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "webhooks": [
+    {
+      "url": "https://webhook-restapi-server.eu-de.mybluemix.net/api",
+      "name": "main_webhook",
+      "headers": []
+    }
+  ],
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Pozostałe przypadki",
+      "output": {
+        "text": {
+          "values": [
+            "Nie rozumiem, czy możesz przeformułować pytanie?",
+            "Nie wiem o co pytasz."
+          ],
+          "selection_policy": "random"
+        }
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Fallback",
+      "previous_sibling": "node_7_1633985949507",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_9_1633966763532",
+      "context": {
+        "email": "@e-mail"
+      },
+      "conditions": "@e-mail",
+      "event_name": "input",
+      "dialog_node": "handler_10_1633966763533"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": []
+      },
+      "parent": "slot_9_1633966763532",
+      "context": {
+        "email_value": "<? @e-mail.literal ?>"
+      },
+      "conditions": "$email==true",
+      "event_name": "filled",
+      "dialog_node": "handler_3_1633982065485",
+      "previous_sibling": "handler_5_1633966763533"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Podaj adres e-mail jaki użyłeś/aś podczas zakupów w naszym sklepie."
+              },
+              {
+                "text": "Jaki adres e-mail podałeś/aś przy zakupie?"
+              },
+              {
+                "text": "Potrzebuje dokładny adres e-mail jakim posłużyłeś się podczas zakupów."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          },
+          {
+            "values": [],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "parent": "slot_9_1633966763532",
+      "context": {},
+      "event_name": "focus",
+      "dialog_node": "handler_5_1633966763533",
+      "previous_sibling": "handler_10_1633966763533"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Podaj datę złożenia zamówienia."
+              },
+              {
+                "text": "Potrzebuję informacji o dacie złożenia zamówienia - podaj ją proszę teraz."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "slot_3_1633981075549",
+      "event_name": "focus",
+      "dialog_node": "handler_8_1633981075549",
+      "previous_sibling": "handler_9_1633981075549"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_3_1633981075549",
+      "context": {
+        "date": "@sys-date"
+      },
+      "conditions": "@sys-date",
+      "event_name": "input",
+      "dialog_node": "handler_9_1633981075549"
+    },
+    {
+      "type": "standard",
+      "title": "wyczyść zebrane informacje",
+      "output": {
+        "generic": []
+      },
+      "parent": "Summary of the order",
+      "context": {
+        "date": null,
+        "email": null,
+        "email_value": null
+      },
+      "conditions": "true",
+      "dialog_node": "node_1_1633989145226",
+      "previous_sibling": "response_8_1634032821359",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "Pomoc",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Po prostu napisz, że chcesz anulować zlecenie, a ja zapytam Ciebie o potrzebne mi informacje o ile ich już nie podałeś wcześniej. Sprawdzę, czy takie zlecenie istnieje w naszych systemach i jeżeli je znajdę to je anuluję."
+              },
+              {
+                "text": "Używając naturalnego języka napisz, że chcesz anulować zlecenie sprzedaży."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#pomoc",
+      "dialog_node": "node_4_1633983069636",
+      "previous_sibling": "Pizza ordering"
+    },
+    {
+      "type": "standard",
+      "title": "O mnie",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Jestem robotem. Mam jedno zadanie: pomóc Tobie anulować zamówienia na towar zakupiony w naszym sklepie."
+              },
+              {
+                "text": "Nie jestem człowiekiem - jestem maszyną pracującą 24 godziny na dobę. Mogę zlecić w Twoim imieniu przyjęcie zwrotu"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#o_mnie",
+      "dialog_node": "node_7_1633985949507",
+      "previous_sibling": "node_4_1633983069636"
+    },
+    {
+      "type": "frame",
+      "title": "Odwołanie zamówienia",
+      "output": {
+        "text": {
+          "values": [
+            "Dziękuję za informacje. Już sprawdzam zamówienie z adresu email: $email_value dokonane w dniu $date ."
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "context": {},
+      "next_step": {
+        "behavior": "skip_user_input"
+      },
+      "conditions": "#odwołanie",
+      "dialog_node": "Pizza ordering",
+      "previous_sibling": "Welcome"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Nie znalazłem zlecenia zakupu dokonanego dnia $date przez osobę posługującą się adresem e-mail $email_value . Sprawdź jeszcze raz podane dane i spróbuj ponownie."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "Summary of the order",
+      "conditions": "$webhook_result_1.id==null",
+      "dialog_node": "response_10_1634033623360"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "Twoje zlecenie $webhook_result_1.id złożone w dniu $date o godzinie $webhook_result_1.time przez osobę posługującą się adresem e-mail $email_value właśnie zostało anulowane.",
+            "Dokonałem anulowania zlecenia $webhook_result_1.id złożonego w dniu $date o godzinie $webhook_result_1.time przez osobę posługującą się adresem e-mail $email_value . Miłego dnia."
+          ],
+          "selection_policy": "random"
+        }
+      },
+      "parent": "Summary of the order",
+      "conditions": "$webhook_result_1",
+      "dialog_node": "response_4_1634032821122",
+      "previous_sibling": "response_10_1634033623360"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "Mam problem z znalezieniem zlecenia. Spróbuj później."
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "Summary of the order",
+      "conditions": "anything_else",
+      "dialog_node": "response_8_1634032821359",
+      "previous_sibling": "response_4_1634032821122"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "Pizza ordering",
+      "variable": "$date",
+      "dialog_node": "slot_3_1633981075549",
+      "previous_sibling": "slot_9_1633966763532"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "Pizza ordering",
+      "variable": "$email",
+      "dialog_node": "slot_9_1633966763532",
+      "previous_sibling": "Summary of the order"
+    },
+    {
+      "type": "standard",
+      "title": "Wywołaj funkcje anulowania zlecenia",
+      "parent": "Pizza ordering",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "date": "$date",
+            "email": "$email_value",
+            "action": "abortdelivery"
+          },
+          "result_variable": "webhook_result_1"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "next_step": {
+        "behavior": "skip_user_input"
+      },
+      "conditions": "true",
+      "dialog_node": "Summary of the order",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "Dzień dobry",
+      "output": {
+        "text": {
+          "values": [
+            "Dzień Dobry. Jestem wirtualnym asystentem obsługującym procedurę odwołania złożonego zamówienia w naszym sklepie internetowym.",
+            "Dzień Dobry, rozmawiasz z robotem. Jeżeli chcesz, to pomogę Tobie anulować zamówienia dokonane w naszym sklepie internetowym."
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "context": {},
+      "conditions": "welcome",
+      "dialog_node": "Welcome",
+      "disambiguation_opt_out": true
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Czy chodziło Tobie o:",
+      "enabled": true,
+      "randomize": true,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "żadne z powyższych"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "THINK2021 - Watson Assistant po polsku. Odwołanie zamówienia.",
+  "language": "xx",
+  "description": "Proste demo pokazujące jak można zautomatyzować obsługę procedury odwołania zamówienia w sklepie internetowym."
+}
