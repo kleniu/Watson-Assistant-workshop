@@ -21,7 +21,7 @@ Uywając najprostrzego narzędzia jakim jest CloudFoundry.
 
 1. Zaloguj się i ustaw środowisko
 ```
-ibmcloud cf login --sso
+ibmcloud login --sso
 ibmcloud target -g default 
 ibmcloud target --cf
 ```
