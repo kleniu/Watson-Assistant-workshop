@@ -1,0 +1,415 @@
+{
+  "intents": [
+    {
+      "intent": "about_me",
+      "examples": [
+        {
+          "text": "am I talking to a human?"
+        },
+        {
+          "text": "Who am I talking with?"
+        },
+        {
+          "text": "Who are you?"
+        }
+      ],
+      "description": "Intention: The user wants to know something about this chatbot"
+    },
+    {
+      "intent": "cancellation",
+      "examples": [
+        {
+          "text": "I don't want items"
+        },
+        {
+          "text": "I want to cancel"
+        },
+        {
+          "text": "I want to cancel my order"
+        },
+        {
+          "text": "please delete the order"
+        }
+      ],
+      "description": "The intention to cancel an order placed in the online store"
+    },
+    {
+      "intent": "help",
+      "examples": [
+        {
+          "text": "Help"
+        },
+        {
+          "text": "How can you help me"
+        },
+        {
+          "text": "how to return"
+        }
+      ],
+      "description": "The intention to get help"
+    }
+  ],
+  "entities": [
+    {
+      "entity": "e-mail",
+      "values": [
+        {
+          "type": "patterns",
+          "value": "true",
+          "patterns": [
+            "\\b[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,}\\b"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "order-number",
+      "values": [
+        {
+          "type": "patterns",
+          "value": "true",
+          "patterns": [
+            "ZAM[0-9]+"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sys-date",
+      "values": [],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "webhooks": [
+    {
+      "url": "https://webhook-restapi-server.eu-de.mybluemix.net/api",
+      "name": "main_webhook",
+      "headers": []
+    }
+  ],
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Other cases",
+      "output": {
+        "text": {
+          "values": [
+            "I do not understand, can you rephrase the question?",
+            "I do not know what you're asking."
+          ],
+          "selection_policy": "random"
+        }
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Fallback",
+      "previous_sibling": "node_7_1633985949507",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_9_1633966763532",
+      "context": {
+        "email": "@e-mail"
+      },
+      "conditions": "@e-mail",
+      "event_name": "input",
+      "dialog_node": "handler_10_1633966763533"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": []
+      },
+      "parent": "slot_9_1633966763532",
+      "context": {
+        "email_value": "<? @e-mail.literal ?>"
+      },
+      "conditions": "$email==true",
+      "event_name": "filled",
+      "dialog_node": "handler_3_1633982065485",
+      "previous_sibling": "handler_5_1633966763533"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Enter the e-mail address you used when shopping in our store."
+              },
+              {
+                "text": "What e-mail address did you provide when making the purchase?"
+              },
+              {
+                "text": "I need the exact e-mail address you used when shopping."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          },
+          {
+            "values": [],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "parent": "slot_9_1633966763532",
+      "context": {},
+      "event_name": "focus",
+      "dialog_node": "handler_5_1633966763533",
+      "previous_sibling": "handler_10_1633966763533"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Enter the date of placing the order."
+              },
+              {
+                "text": "I need information about the date of placing the order - please provide it now."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "slot_3_1633981075549",
+      "event_name": "focus",
+      "dialog_node": "handler_8_1633981075549",
+      "previous_sibling": "handler_9_1633981075549"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_3_1633981075549",
+      "context": {
+        "date": "@sys-date"
+      },
+      "conditions": "@sys-date",
+      "event_name": "input",
+      "dialog_node": "handler_9_1633981075549"
+    },
+    {
+      "type": "standard",
+      "title": "wyczyść zebrane informacje",
+      "output": {
+        "generic": []
+      },
+      "parent": "Summary of the order",
+      "context": {
+        "date": null,
+        "email": null,
+        "email_value": null
+      },
+      "conditions": "true",
+      "dialog_node": "node_1_1633989145226",
+      "previous_sibling": "response_8_1634032821359",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "Help",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Just write that you want to cancel the order, and I will ask you for the information I need, as long as you have not provided it before. I will check whether such an order exists in our systems and if I find it, I cancel it."
+              },
+              {
+                "text": "Using natural language, write that you want to cancel the sales order."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#help",
+      "dialog_node": "node_4_1633983069636",
+      "previous_sibling": "Pizza ordering"
+    },
+    {
+      "type": "standard",
+      "title": "O mnie",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "I am a robot. I have one task: to help you cancel orders for goods purchased in our store."
+              },
+              {
+                "text": "I am not human - I am a machine that works 24 hours a day. I can cancel the order on your behalf."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#about_me",
+      "dialog_node": "node_7_1633985949507",
+      "previous_sibling": "node_4_1633983069636"
+    },
+    {
+      "type": "frame",
+      "title": "Order cancellation",
+      "output": {
+        "text": {
+          "values": [
+            "Thank you for the information. I'm already checking the order from the email address: $email_value made on $date."
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "context": {},
+      "next_step": {
+        "behavior": "skip_user_input"
+      },
+      "conditions": "#cancellation",
+      "dialog_node": "Pizza ordering",
+      "previous_sibling": "Welcome"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "I cannot find a purchase order made on $date by the person with the email address $email_value . Double-check your data and try again."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "Summary of the order",
+      "conditions": "$webhook_result_1.id==null",
+      "dialog_node": "response_10_1634033623360"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "Your $webhook_result_1.id order placed on $date at $webhook_result_1.time by the person with the email address $email_value has just been canceled.",
+            "I canceled an order $webhook_result_1.id placed on $date at $webhook_result_1.time by person with the email address $email_value. Have a nice day."
+          ],
+          "selection_policy": "random"
+        }
+      },
+      "parent": "Summary of the order",
+      "conditions": "$webhook_result_1",
+      "dialog_node": "response_4_1634032821122",
+      "previous_sibling": "response_10_1634033623360"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "I have a problem with finding an order. Please try again later."
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "Summary of the order",
+      "conditions": "anything_else",
+      "dialog_node": "response_8_1634032821359",
+      "previous_sibling": "response_4_1634032821122"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "Pizza ordering",
+      "variable": "$date",
+      "dialog_node": "slot_3_1633981075549",
+      "previous_sibling": "slot_9_1633966763532"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "Pizza ordering",
+      "variable": "$email",
+      "dialog_node": "slot_9_1633966763532",
+      "previous_sibling": "Summary of the order"
+    },
+    {
+      "type": "standard",
+      "title": "Call the functions for canceling the order using webhook ",
+      "parent": "Pizza ordering",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "date": "$date",
+            "email": "$email_value",
+            "action": "abortdelivery"
+          },
+          "result_variable": "webhook_result_1"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "next_step": {
+        "behavior": "skip_user_input"
+      },
+      "conditions": "true",
+      "dialog_node": "Summary of the order",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "Hello",
+      "output": {
+        "text": {
+          "values": [
+            "Hi, I am a virtual assistant handling the procedure for canceling an order placed in our online store.",
+            "Hello, you are talking to the robot. If you want, I will help you cancel orders placed in our online store."
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "context": {},
+      "conditions": "welcome",
+      "dialog_node": "Welcome",
+      "disambiguation_opt_out": true
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Did you mean:",
+      "enabled": true,
+      "randomize": true,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "None of the above"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "HCBT Watson Assistant Webhooks for order canceling",
+  "language": "en",
+  "description": "A simple demo showing how you can automate handling of the order cancellation procedure in the online store."
+}
