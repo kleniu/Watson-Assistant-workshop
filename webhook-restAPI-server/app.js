@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended: true}));
 
 // endpoints definitions
 app.get('/', (rer, res) => {
-  res.send('Żyję i mam się dobrze :)');
+  res.send('I am alive and I\'m doing great :)');
 });
 
 app.get('/api/ping', (req, res) => {
@@ -41,13 +41,13 @@ app.post('/api', (req, res) => {
         element => element.date === req.body.date && element.email === req.body.email 
       );
       if ( i != -1 ) {
-        datarepo[i].status = 'alunowano';
+        datarepo[i].status = 'canceled';
         retval = datarepo[i];
       }
       break;
     case 'restart':
       datarepo = JSON.parse(JSON.stringify(initialdata));
-      retval = { response:"Pracujesz teraz na danych inicjalnych. Powodzenia!" };
+      retval = { response:"You are now working on initial data now. Good luck!" };
       break;
   }
   res.send(retval);
