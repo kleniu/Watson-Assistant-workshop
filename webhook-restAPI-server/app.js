@@ -4,8 +4,8 @@ const port = 8080;
 
 // fake datatabase
 const initialdata = [
-  { id: 'ZAM243', email: 'robert@test.pl', status: 'sent', date: '2021-09-12', time: '12:01:00'},
-  { id: 'ZAM731', email: 'rafal@agro.eu', status: 'completing', date: '2021-10-11', time: '16:12:01'},
+  { id: 'ZAM123', email: 'robert@test.pl', status: 'sent', date: '2022-05-01', time: '12:01:00'},
+  { id: 'ZAM456', email: 'rafal@agro.eu', status: 'completing', date: '2022-05-03', time: '16:12:01'},
 ];
 let datarepo = JSON.parse(JSON.stringify(initialdata));
 
@@ -39,6 +39,15 @@ app.post('/api', (req, res) => {
     case 'abortdelivery':
       var i = datarepo.findIndex(
         element => element.date === req.body.date && element.email === req.body.email 
+      );
+      if ( i != -1 ) {
+        datarepo[i].status = 'canceled';
+        retval = datarepo[i];
+      }
+      break;
+    case 'abortdeliverybydate':
+      var i = datarepo.findIndex(
+        element => element.date === req.body.date 
       );
       if ( i != -1 ) {
         datarepo[i].status = 'canceled';

@@ -66,11 +66,15 @@ curl -s -X POST -H 'Content-Type: application/json' -d '{"action":"getall"}' ${R
 ```
 download a single order identified by a key: email:data
 ```
-curl -s -X POST -H 'Content-Type: application/json' -d '{"action":"getbydateandemail", "email":"rafal@agro.eu", "date":"2021-10-11"}' ${RESTURL}/api | jq
+curl -s -X POST -H 'Content-Type: application/json' -d '{"action":"getbydateandemail", "email":"rafal@agro.eu", "date":"2022-05-01"}' ${RESTURL}/api | jq
 ```
-change the status of the order identified by the key: email:data na "canceled"
+change the status of the order identified by the key: email:data to "canceled"
 ```
-curl -s -X POST -H 'Content-Type: application/json' -d '{"action":"abortdelivery", "email":"rafal@agro.eu", "date":"2021-10-11"}' ${RESTURL}/api | jq
+curl -s -X POST -H 'Content-Type: application/json' -d '{"action":"abortdelivery", "email":"rafal@agro.eu", "date":"2022-05-03"}' ${RESTURL}/api | jq
+```
+change the status of the order identified by the key: date to "canceled"
+```
+curl -s -X POST -H 'Content-Type: application/json' -d '{"action":"abortdeliverybydate", "date":"2022-05-01" }' ${RESTURL}/api | jq
 ```
 orders data are kept in the memory :) restore original data
 ```
