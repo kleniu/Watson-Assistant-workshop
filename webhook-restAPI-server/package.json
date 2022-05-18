@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/kleniu/Think2021-Watson-Assistant-workshop#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.18.1"
   },
-  "engines" : { "node" : "^14.17.6" } 
+  "engines": {
+    "node": "^14.17.0"
+  }
 }
