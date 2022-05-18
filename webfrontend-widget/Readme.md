@@ -1,5 +1,37 @@
-## Recipe for running a REST server on the Internet
-Using the simplest tool which is CloudFoundry.
+## Deploying REST server using IBM Code Engine
+1. Log in and set the environment
+```
+ibmcloud login --sso
+```
+set resource group (in our case it's "default")
+```
+ibmcloud target -g default 
+```
+(optionally, if not created) create project named "WA-workshop" in IBM Code Engine service
+```
+ibmcloud ce project create --name WA-workshop --endpoint public
+```
+(optionally, if not selected) select project named "WA-workshop" as the active one
+```
+ibmcloud ce project select --name WA-workshop
+```
+from now, all applications will be deployed in project "WA-workshop" namespace
+
+2. Deploy the app
+
+IMPORTANT! execute following command being inside the directory: webfrontend-widget
+
+IMPORTANT! remove previous src/node_modules directory and src/package-lock.json file - it will be recreated in Code Engine
+```
+ibmcloud ce app create --name webfrontend-widget --build-source ./src --strategy buildpacks --min 1 --max 1
+```
+3. Record the web page URL
+```
+ibmcloud ce app list
+```
+
+
+## Deploying REST server using IBM CloudFoundry
 
 1. Log in and set the environment
 ```
@@ -11,11 +43,32 @@ ibmcloud target --cf
 ```
 ibmcloud cf push -f manifest.yml
 ```
-3. Check the logs
+3. Record the web page URL
+```
+ibmcloud cf apps
+```
+4. Check the logs
 ```
 ibmcloud cf logs webhook-restapi-server --recent
 ```
 
+## How to customize web page to include the Watson Assistant web widget
+1. Copy paste JS code snippet from Watson Assistant
+2. Edit file `src/src/index.html`
+add `<script>` section below comment text: `<!-- Place your JS code snippet from Watson Assistant Web integration-->`
+3. Update application
+
+a. Option 1 - for IBM Code Engine
+```
+ibmcloud ce app update --name webfrontend-widget --build-source ./src --strategy buildpacks --min 1 --max 1
+```
+
+b. Option 2 - for IBM Cloud Foundry
+```
+ibmcloud cf push -f manifest.yml
+```
+
+## Customizing Widget Icon
 As the "icing on the cake", I present how to customize the web widget so that it has its own icon and information in the editbox for interaction with the chatbot
 
 1. Add the custom button to your 'HTML' file, with your svg icon
