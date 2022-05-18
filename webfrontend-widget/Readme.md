@@ -13,12 +13,9 @@ ibmcloud cf push -f manifest.yml
 ```
 3. Check the logs
 ```
-ibmcloud cf logs webfrontend-widget --recent
+ibmcloud cf logs webhook-restapi-server --recent
 ```
-4. Open web page using web browser - e.g. for eu-de region: [https://webfrontend-widget.eu-de.mybluemix.net/](https://webfrontend-widget.eu-de.mybluemix.net/)
 
-
-## Customizing web widget icon
 As the "icing on the cake", I present how to customize the web widget so that it has its own icon and information in the editbox for interaction with the chatbot
 
 1. Add the custom button to your 'HTML' file, with your svg icon
