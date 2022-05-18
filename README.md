@@ -1,5 +1,5 @@
 # e-store order cancellation using Watson Assistant
-This repository was prepared for the participants of the workshops conducted as part of the Warsaw edition of THINK 2021 and for the European participants of the webinar conducted as part of the Hybrid Cloud Build Team CEE.
+This repository was prepared for the participants of the Watson Assistant workshops conducted as part of the Client Engineering Team CEE.
 
 ## Repository content
 ```
